@@ -10,18 +10,12 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Olá, mundo! 👋
-        </h1>
-        <p className={styles.description}>
-          Esta é uma aplicação Next.js usando JavaScript.
-        </p>
+      <main className="centerIt">
+        <p>Acesse localhost:port/cotacao para a página ser exibida. Fiquei com preguiça de adicionar qualquer coisa aqui.</p>
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZyvAQu57cDeHp2H6h0sPokbJgJVKb8YeSeg&s" alt="galinha pintadinha" />
       </main>
 
-      <footer className={styles.footer}>
-        <p>Feito em Next.js</p>
-      </footer>
+      <footer className={styles.footer}></footer>
     </div>
   )
 }

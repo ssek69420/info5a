@@ -1,27 +1,100 @@
-import useSWR from 'swr';
-import { fetcher } from '../lib/fetcher';
+import { useState } from 'react'
 
 export default function Home() {
-  const { data, error, isLoading } = useSWR(
-    'https://economia.awesomeapi.com.br/json/last/USD-BRL,EUR-BRL?token=927c456f9a4bec44887e5cc0e2d154c8f843f33855ec2ec0d15db596ee7d19cd',
-    fetcher,
-    { refreshInterval: 5000 } // Atualiza a cada 60s //1000 == 1 segundo refresh page
-  );
+  const [startDate, setStartDate] = useState('')
+  const [endDate, setEndDate] = useState('')
+  const [data, setData] = useState(null)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
 
-  if (error) return <div>Erro ao carregar dados.</div>;
-  if (isLoading || !data) return <div>Carregando...</div>;
+  const handleBuscar = async () => {
+    if (!startDate || !endDate) {
+      setError('Preencha as duas datas antes de buscar.')
+      return
+    }
+    if (startDate > endDate) {
+      setError('A data de início deve ser anterior à data fim.')
+      return
+    }
 
-  const usdbrl = data.USDBRL;
+    setError(null)
+    setLoading(true)
+    setData(null)
+
+    const sd = startDate.replace(/-/g, '')
+    const ed = endDate.replace(/-/g, '')
+    const url = `https://economia.awesomeapi.com.br/json/daily/USD-BRL/?start_date=${sd}&end_date=${ed}`
+
+    try {
+      const res = await fetch(url)
+      if (!res.ok) throw new Error(`Status ${res.status}`)
+      setData(await res.json())
+    } catch (err) {
+      setError(`Erro ao buscar: ${err.message}`)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
-    <main style={{ padding: '2rem', fontFamily: 'Arial' }}>
-      <h1>Cotação Dólar Hoje (USD/BRL)</h1>
-      <p><strong>Compra:</strong> R$ {usdbrl.bid}</p>
-      <p><strong>Venda:</strong> R$ {usdbrl.ask}</p>
-      <p><strong>Alta:</strong> R$ {usdbrl.high}</p>
-      <p><strong>Baixa:</strong> R$ {usdbrl.low}</p>
-      <p><strong>Variação:</strong> {usdbrl.varBid} ({usdbrl.pctChange}%)</p>
-      <small>Atualizado: {new Date(Number(usdbrl.timestamp) * 1000).toLocaleString()}</small>
+    <main className="cotacao">
+      <h1>Buscar Cotação USD/BRL</h1>
+
+      <div className="form-controls">
+        <label className="form-label">
+          Data Início
+          <input
+            className="form-input"
+            type="date"
+            value={startDate}
+            onChange={e => setStartDate(e.target.value)}
+          />
+        </label>
+
+        <label className="form-label">
+          Data Fim
+          <input
+            className="form-input"
+            type="date"
+            value={endDate}
+            onChange={e => setEndDate(e.target.value)}
+          />
+        </label>
+
+        <button className="btn" onClick={handleBuscar}>
+          Buscar
+        </button>
+      </div>
+
+      {error && <p className="error">{error}</p>}
+      {loading && <p className="loading">Carregando...</p>}
+
+      {data && Array.isArray(data) && (
+        <>
+          <table>
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Compra</th>
+                <th>Venda</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.map(item => (
+                <tr key={item.timestamp}>
+                  <td>{new Date(item.timestamp * 1000).toLocaleDateString('pt-BR')}</td>
+                  <td>R$ {parseFloat(item.bid).toFixed(4)}</td>
+                  <td>R$ {parseFloat(item.ask).toFixed(4)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          <small className="updated">
+            Última atualização: {new Date(Number(data[0].timestamp) * 1000).toLocaleString('pt-BR')}
+          </small>
+        </>
+      )}
     </main>
-  );
+  )
 }

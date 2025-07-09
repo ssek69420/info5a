@@ -1,26 +1,85 @@
-@import "tailwindcss";
-
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+main.cotacao {
+  padding: 2rem;
+  font-family: Arial, sans-serif;
+  max-width: 800px;
+  margin: auto;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+.form-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+.form-label {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.9rem;
+  color: #333;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+.form-input {
+  margin-top: 0.25rem;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.btn {
+  padding: 0.6rem 1.2rem;
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.btn:hover {
+  background-color: #1e40af;
+}
+
+.error {
+  color: #b91c1c;
+  margin-bottom: 1rem;
+}
+
+.loading {
+  color: #555;
+  margin-bottom: 1rem;
+}
+
+main.cotacao table {
+  width: 100%;
+  border-collapse: collapse;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
+  margin-bottom: 1rem;
+}
+
+main.cotacao th,
+main.cotacao td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+}
+
+main.cotacao th {
+  background-color: #f1f5f9;
+  color: #0f172a;
+}
+
+main.cotacao tr:hover {
+  background-color: #f8fafc;
+}
+
+main.centerIt{
+  padding: 25rem;
+  text-align: center;
+}
+
+.updated {
+  color: #555;
+  font-size: 0.85rem;
 }
